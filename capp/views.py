@@ -78,11 +78,20 @@ class inprun(APIView):
             return Response(msg)
         
         try:
+
             a2 = subprocess.run("./"+fname,timeout=5, shell=True, capture_output=True,input=inp.encode())
+            if a2.returncode !=0:
+                a2 = subprocess.run(fname,timeout=5, shell=True, capture_output=True,input=inp.encode())
+                
             print("done")
             os.remove(fnamefull)
             # os.remove(fname + ".exe")
-            os.remove(fname)
+            try:
+                os.remove(fname)
+            except Exception as e:
+                os.remove(fname+".exe")
+
+                
         except subprocess.TimeoutExpired:
             msg = {
                 "resp": "success",
