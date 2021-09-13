@@ -78,7 +78,7 @@ class inprun(APIView):
             return Response(msg)
         
         try:
-            a2 = subprocess.run(fname,timeout=5, shell=True, capture_output=True,input=inp.encode())
+            a2 = subprocess.run("./"+fname,timeout=5, shell=True, capture_output=True,input=inp.encode())
             print("done")
             os.remove(fnamefull)
             # os.remove(fname + ".exe")
