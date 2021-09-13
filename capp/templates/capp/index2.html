@@ -1,0 +1,315 @@
+{% extends "capp/base.html" %}
+{% block style %}
+<style>
+.head1{
+    font-family: 'Merriweather', serif;
+    font-size: 2.5rem;
+    margin-top: .5rem;
+    /* background-color: #f7f7f7; */
+    background-color: #d1d1d1;
+    border-radius: .3rem;
+    padding-left: .5rem;
+}
+#top{
+    width: 90%;
+    margin: auto;
+    /* padding-top: .001rem; */
+    background: #e5e5e8;
+    padding: 1rem;
+}
+
+        #output {
+            background-color: black;
+            color: white;
+            width: 100%;
+            padding: 1rem;
+
+        }
+
+        #code {
+            width: 100%;
+            padding: 2rem 2rem;
+    font-weight: 600;
+    font-size: 109%;
+    border: 2px solid black;
+    border-radius: .5rem;
+    background-color: rgb(0, 0, 218);
+    color: white;
+    font-family: 'Merriweather', serif;
+    font-weight: 800;
+
+}
+
+        #inp{
+            width: 100%;
+            height: 80%;
+            border: 2px solid black;
+    border-radius: .5rem;
+    padding: 1rem;
+        }
+        #codediv{
+            width: 100%;
+            display: flex;
+            /* margin: auto; */
+
+        }
+        .combo{
+            display: flex;
+            
+        }
+        #odiv{
+            width: 70%;
+            
+        }
+        #inpdiv{
+            width: 30%;
+            
+        }
+        #output{
+            border: 2px solid black;
+            height: 80%;
+    border-radius: .5rem;
+    padding: .5rem 1rem;
+    width: 100%;
+        }
+        #run,#save{
+            width: 10rem;
+            border: 2px solid black;
+            border-radius: .4rem;
+            background-color: #d1d1d1;
+            
+            
+        }
+        
+        #numbering p{
+            padding: 0px !important;
+            margin: 0px !important;
+            font-weight: 600;
+    font-size: 109%;
+        }
+        #numbering{
+            padding-top: 2rem;
+            display: none;
+        }
+        html {
+            scroll-behavior: smooth;
+            scroll-padding: 35%;
+        }
+        #fnamediv{
+            display: none;
+        }
+        #filename{
+            padding: .1rem .4rem;
+            border: 1px solid black;
+            border-radius: .4rem;
+        }
+</style>
+
+{% endblock %}
+{% block body %}
+<div id="top">
+    <!-- {% csrf_token %} -->
+<div> <h3 class="head1">Online CPP Compiler</h3></div>
+
+<!-- <br> -->
+<button id="run" onclick="inpb()" class="freeze">run</button>
+<button id="save" class="freeze" onclick="savedata()">save</button>
+<input type="text" placeholder="file name" id="filename" class="freeze">
+<span id="fnamediv"> FileName: <strong id="fnamediv2">{{ fname }}</strong></span>
+
+<!-- <div><p id="message">  </p></div> -->
+<br>
+<br>
+<div id="scombo">
+<div id="codediv">
+    <div id="numbering"><p>1</p><p>2</p><p>5</p><p>4</p><p>5</p><p>6</p></div>
+    <textarea name="code" id="code" cols="30" rows="10" onkeypress="tab(event)" class="freeze">#include<iostream>
+ 
+        using namespace std;
+
+        int main()
+        {
+            // prints hello world
+            cout<<"Hello World";
+             
+            return 0;
+        }
+    </textarea>
+</div>
+<div class="combo">
+<div id="inpdiv">
+    <!-- <input type="text" id="inp"> -->
+    <textarea name="inp" id="inp" placeholder="Give your input here" class="freeze"></textarea>
+</div>
+<!-- <button id="inprun" onclick="inpb()">send input </button> -->
+<div id="odiv">
+    <textarea name="output" id="output" cols="30" rows="10" onkeydown="" placeholder="OUTPUT" readonly class="freeze"></textarea>
+</div>
+</div>
+</div>
+</div>
+<input type="text" id="mode" value="new">
+{% endblock %}
+
+{% block java %}
+<script>
+    // for ctrl + s
+
+    $(window).bind('keydown', function(event) {
+    if (event.ctrlKey || event.metaKey) {
+        switch (String.fromCharCode(event.which).toLowerCase()) {
+        case 's':
+            event.preventDefault();
+            savedata();
+            break;
+        // case 'f':
+        //     event.preventDefault();
+        //     alert('ctrl-f');
+        //     break;
+        // case 'g':
+        //     event.preventDefault();
+        //     alert('ctrl-g');
+        //     break;
+        }
+    }
+});
+
+// for tab inide textarea 
+
+document.getElementById('code').addEventListener('keydown', function(e) {
+  if (e.key == 'Tab') {
+    e.preventDefault();
+    var start = this.selectionStart;
+    var end = this.selectionEnd;
+
+    // set textarea value to: text before caret + tab + text after caret
+    this.value = this.value.substring(0, start) +
+      "\t" + this.value.substring(end);
+
+    // put caret at right position again
+    this.selectionStart =
+      this.selectionEnd = start + 1;
+  }
+  document.querySelector("#save").innerHTML = "save";
+  document.querySelector("#save").style.backgroundColor = "#d1d1d1";
+});
+
+
+    function inpb(){
+        document.querySelector("#run").innerHTML = "running";
+        document.querySelector("#run").disabled = true;
+        document.querySelectorAll(".freeze").forEach((elem)=>{
+            elem.disabled = true;
+        })
+        let url = "/c-run/api/run/inp/"
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({
+                title: 'New Pirate Captain',
+                body: 'Arrrrrr-ent you excited?',
+                userId: 3,
+                code: document.querySelector("#code").value,
+                input: document.querySelector("#inp").value
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(function (response) {
+            if (response.ok) {
+                // console.log(response.status);
+                return response.json();
+            }
+            return Promise.reject(response);
+        }).then(function (data) {
+            document.querySelector("#output").value = data["output"];
+            document.querySelector("#output").scrollIntoView();
+            document.querySelector("#run").innerHTML = "run";
+            document.querySelector("#run").removeAttribute('disabled');
+            document.querySelectorAll(".freeze").forEach((elem)=>{
+            elem.removeAttribute('disabled');
+            })
+            // console.log(data);
+        }).catch(function (error) {
+            console.warn('Something went wrong.', error);
+            document.querySelector("#output").value = "Some server error occured";
+            document.querySelector("#run").innerHTML = "run";
+            document.querySelector("#run").removeAttribute('disabled');
+            document.querySelectorAll(".freeze").forEach((elem)=>{
+            elem.removeAttribute('disabled');
+            })
+        });
+    }
+
+
+function savedata(){
+    let fname = document.querySelector("#filename").value;
+    if (fname == ""){
+        alert("File name cannot be blank")
+        return
+    }
+    let code = document.querySelector("#code").value;
+    document.querySelector("#save").innerHTML = "saving";
+    
+    document.querySelectorAll(".freeze").forEach((elem)=>{
+            elem.disabled = true;
+        })
+    let url = "/c-run/api/save/"
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({
+                title: 'New Pirate Captain',
+                body: 'Arrrrrr-ent you excited?',
+                userId: 3,
+                code: document.querySelector("#code").value,
+                filename: document.querySelector("#filename").value,
+                mode: document.querySelector("#mode").value
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(function (response) {
+            if (response.status == 200) {
+                // console.log(response.status);
+                
+                return response.json();
+            }
+            else if(response.status == 226){
+                    alert("File with the same name already exist give another name");
+                    document.querySelectorAll(".freeze").forEach((elem)=>{
+                        elem.removeAttribute('disabled');
+                        })
+                    return Promise.reject(response);
+                }
+            return Promise.reject(response);
+        }).then(function (data) {
+            // document.querySelector("#output").value = data["output"];
+            // document.querySelector("#output").scrollIntoView();
+            document.querySelector("#save").innerHTML = "saved";
+            document.querySelector("#save").style.backgroundColor = "#3cd53c";
+            document.querySelector("#save").removeAttribute('disabled');
+            document.querySelectorAll(".freeze").forEach((elem)=>{
+            elem.removeAttribute('disabled');
+            })
+
+            document.querySelector("#fnamediv2").innerHTML = document.querySelector("#filename").value;
+            history.pushState({}, null, `../showfile/${document.querySelector("#filename").value}`);
+            document.querySelector("#filename").style.display = "none";
+            document.querySelector("#fnamediv").style.display = "block";
+            document.querySelector("#mode").value = "alreadyexist";
+            // console.log(data);
+        }).catch(function (error) {
+            console.warn('Something went wrong.', error);
+            document.querySelector("#output").value = "Some server error occured";
+            document.querySelector("#save").innerHTML = "save";
+            document.querySelectorAll(".freeze").forEach((elem)=>{
+            elem.removeAttribute('disabled');
+            })
+        });
+}
+
+
+
+</script>
+{% endblock %}

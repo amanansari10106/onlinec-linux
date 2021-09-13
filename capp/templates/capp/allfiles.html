@@ -1,0 +1,269 @@
+{% extends "capp/base.html" %}
+{% block style %}
+<style>
+.head1{
+    margin: 0px;
+    margin-top: .5rem;
+    /* background-color: #f7f7f7; */
+    background-color: #d1d1d1;
+    border-radius: .3rem;
+    padding-left: .5rem;
+    position: static;
+    display: flex;
+}
+.head1 h3{
+    font-family: 'Merriweather', serif;
+    font-size: 2.5rem;
+    width: fit-content;
+    /* display: contents; */
+}
+.head1 div{
+    /* position: absolute;
+    top: 0.2rem;
+    right: .2rem; */
+    /* display: flex;
+    align-items: flex-end; */
+    margin: .8rem 1rem 0rem auto;
+
+}
+#top{
+    width: 90%;
+    margin: auto;
+    /* padding-top: .001rem; */
+    background: #e5e5e8;
+    padding: 1rem;
+}
+
+        #output {
+            background-color: black;
+            color: white;
+            width: 100%;
+            padding: 1rem;
+
+        }
+
+        #code {
+            width: 100%;
+            padding: 2rem 2rem;
+    font-weight: 600;
+    font-size: 109%;
+    border: 2px solid black;
+    border-radius: .5rem;
+    background-color: rgb(0, 0, 218);
+    color: white;
+    font-family: 'Merriweather', serif;
+    font-weight: 800;
+
+}
+
+        #inp{
+            width: 100%;
+            height: 80%;
+            border: 2px solid black;
+    border-radius: .5rem;
+    padding: 1rem;
+        }
+        #codediv{
+            width: 100%;
+            display: flex;
+            /* margin: auto; */
+
+        }
+        .combo{
+            display: flex;
+            
+        }
+        #odiv{
+            width: 70%;
+            
+        }
+        #inpdiv{
+            width: 30%;
+            
+        }
+        #output{
+            border: 2px solid black;
+            height: 80%;
+    border-radius: .5rem;
+    padding: .5rem 1rem;
+    width: 100%;
+        }
+        #run{
+            width: 10rem;
+            border: 2px solid black;
+            border-radius: .4rem;
+            background-color: #d1d1d1;
+            
+            
+        }
+        
+        #numbering p{
+            padding: 0px !important;
+            margin: 0px !important;
+            font-weight: 600;
+    font-size: 109%;
+        }
+        #numbering{
+            padding-top: 2rem;
+            display: none;
+        }
+        html {
+            scroll-behavior: smooth;
+            scroll-padding: 35%;
+        }
+        #two{
+            margin: 3rem;
+
+        }
+        .container1{
+            display: flex;
+            margin: 1rem;
+            background-color: #cfcfcf;
+            padding: 1rem;
+            border-radius: .4rem;
+            height: 3.6rem;
+            
+        }
+        @keyframes deleteanimation {
+            0%{
+                opacity: 100%;
+               height: 3.6rem;
+               padding: 1rem;
+            }
+            75%{
+                opacity:0%;
+              height: 3.6rem;
+              padding: 1rem;  
+                
+            }
+            100%{
+                padding: 0rem;
+                opacity: 0%;
+                height: 0rem;
+            }
+        }
+        
+        .container1 div{
+            margin-left: auto;
+        }
+        .container1 strong{
+            width: fit-content;
+        }
+        #top button{
+            border-radius: .4rem;
+            font-weight: 600;
+            background-color: #3535fb;
+            color: white;
+        }
+
+        #top input{
+            border-radius: .4rem;
+        }
+        .delete{
+            background-color: #f70000 !important;
+            color: white !important;
+        }
+        
+        .danim{
+            /* animation-timing-function: ease-in-out; */
+            animation-name: deleteanimation;
+            animation-duration: 2s;
+            animation-fill-mode: forwards;
+            /* animation-play-state: paused; */
+        }
+     
+</style>
+
+{% endblock %}
+{% block body %}
+<div id="top">
+<div class="head1"> <h3>All Files</h3> <div><input type="text" placeholder="File Name" id="searchname" onkeyup="searchfile()"> <button type="button">Search</button></div></div>
+
+<div id="two">
+    
+    {% for a in li %}
+       
+        <div class="container1">
+            <strong><a href="{% url 'showfile' filename=a.file_name %}" class="fname">{{ a.file_name }}</a></strong>
+            <div><button class="delete" onclick="deletefile(this)">Delete</button></div>
+        </div>    
+    
+    
+    {% endfor %}
+</div>
+
+
+
+
+</div>
+</div>
+{% endblock %}
+
+{% block java %}
+<script>
+    function deletefile(e){
+        let url = "/c-run/api/deletefile/"
+        let a = e.parentElement;
+        let container = a.parentElement;
+        let f = container.querySelector("a");
+        
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({
+                title: 'New Pirate Captain',
+                body: 'Arrrrrr-ent you excited?',
+                userId: 3,
+                "filename":f.innerHTML
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        }).then(function (response) {
+            let me = document.querySelector("#label1")
+            if (response.status == 200) {
+                container.classList.add("danim");
+                container.addEventListener("animationend",()=>{
+                    container.remove();
+                })
+                return response.json();
+            }
+            
+            return Promise.reject(response);
+        }).then(function (data) {
+            
+            // console.log(data);
+        }).catch(function (error) {
+            
+        });
+
+
+
+        
+        
+    }
+
+    function searchfile(){
+        var fli = [];
+        var se = document.querySelector("#searchname").value;
+        document.querySelectorAll(".fname").forEach((ele)=>{
+            let s = ele.innerHTML;
+            if (s.search(se)>=0){
+                if (se==""){
+                    document.querySelectorAll(".container1").forEach((ct1)=>{
+                        ct1.style.display = "flex"
+                    })
+                }
+                let a2 = ele.parentElement;
+                let b2 = a2.parentElement;
+                b2.style.display = "flex";
+            }
+            else{
+                let a = ele.parentElement;
+                let b = a.parentElement;
+                b.style.display = "none";
+            }
+        })
+    }
+</script>
+{% endblock %}

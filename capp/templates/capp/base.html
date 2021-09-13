@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% block style %}
+  {% endblock %}
+  <title>Document</title>
+  <style>
+    #footer {
+      height: 4rem;
+      background-color: #9b9191;
+
+    }
+
+    /* #footer-parent{
+      display: block;
+      position: fixed;
+      left: 0px;
+      bottom:0px;
+      width: 100%;
+    } */
+    .center-div {
+      display: flex;
+      justify-content: center;
+    }
+
+    .sr {
+      display: none;
+    }
+    .islogin a{
+      color:  white !important;
+    }
+    .islogin{
+      color:  white;
+    }
+    .islogin a{
+      color:  rgb(241, 67, 67) !important;
+    }
+  </style>
+
+</head>
+
+<body id="body-id">
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" id="nav">
+    <a class="navbar-brand" href="#"><img
+        src="https://2.bp.blogspot.com/-SvhC7wlAp_o/XjxkUYbiYcI/AAAAAAAAEME/umI_0ToyWHkJTsa6ep3LIVJ3x4Yf5m7uQCK4BGAYYCw/s113/dataset-card.jpg"
+        style="width: 2rem; height: 2rem;" alt=""></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active" id="home">
+          <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item" id="showall">
+              <a class="nav-link" href="{% url 'allfileview' %}">Show All Files</a>
+            </li>
+        <li class="nav-item" id="create">
+          <a class="nav-link" href="{% url 'index' %}">Create New File</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link sr" id="sr-id" href="#">Search Result</a>
+        </li>
+        <li class="nav-item dropdown" style="display: none;">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Dropdown
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item">Something else here</a>
+          </div>
+        </li>
+        <li class="nav-item" style="display: none;">
+          <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+      </ul>
+      <form class="form-inline my-2 my-lg-0" action="" method="POST">
+        <!-- {% csrf_token %} -->
+        <!-- <input class="form-control mr-sm-2" name="query" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
+        {% if user.is_authenticated %}
+        <span class="islogin">Signed in as <strong>{{ user.username }}</strong>.<a href="{% url 'logout' %}"> Logout</a></span>
+        {% else %}
+        <span class="islogin"><a href="{% url 'loginview' %}">Login/Signup</a></span>
+        {% endif %}
+        <!-- <p>login</p> -->
+      </form>
+    </div>
+  </nav>
+
+
+  {% block body %}
+  {% endblock %}
+  <!-- <div id="footer-parent"><div id="footer" class="center-div" >
+      <h3 style="margin: auto;">Created By Aman</h3>
+   </div></div> -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+</body>
+<script>
+
+  document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(function () {
+      let navheight = document.getElementById("nav").offsetHeight;
+      document.getElementById("top").style.marginTop = navheight + "px";
+    }, 10)
+
+  });
+</script>
+{% block java %}
+<script>
+  function myFunction() {
+    var element = document.getElementById("myDIV");
+
+    element.classList.remove("mystyle");
+  }
+</script>
+{% endblock %}
+
+</html>

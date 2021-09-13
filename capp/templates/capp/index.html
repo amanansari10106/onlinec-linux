@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #output {
+            background-color: black;
+            color: white;
+            width: 100%;
+
+        }
+
+        #code {
+            width: 100%;
+
+        }
+
+        #inp{
+            width: 100%;
+        }
+        #idiv #inpdiv{
+            width: 90%;
+            /* margin: auto; */
+
+        }
+        .combo{
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+    <style>
+        #output {
+            background-color: black;
+            color: white;
+        }
+    </style>
+    <div>
+        online c
+    </div>
+    <br>
+    <button id="run" onclick="inpb()" >run</button>
+    <div id="idiv">
+        <textarea name="code" id="code" cols="30" rows="10" onkeypress="tab(event)"></textarea>
+    </div>
+    <div class="combo">
+    <div id="inpdiv">
+        <!-- <input type="text" id="inp"> -->
+        <textarea name="inp" id="inp" cols="30" rows="10"></textarea>
+    </div>
+    <!-- <button id="inprun" onclick="inpb()">send input </button> -->
+    <div id="odiv">
+        <textarea name="output" id="output" cols="30" rows="10" onkeydown="inpz()"></textarea>
+    </div>
+</div>
+
+</body>
+
+<script>
+    // function run(){
+    //     let code = document.querySelector("#code");
+    //     let a = 
+    // }
+    // var inpcounter = 0;
+    var lastdata;
+    var len;
+    var commands = [];
+    function inpz(){
+        len = lastdata.length;
+        let newdata = document.querySelector("#output").value;
+        let nlen = newdata.length;
+        let z = newdata.substring(len-1,nlen+1);
+        commands.push(z);
+        console.log("printing");
+        console.log();
+        console.log(commands);
+
+    }
+    function inpb(){
+        commands.push(document.querySelector("#inp").value);
+        // document.querySelector("#inprun").disabled = true;
+        let url = "http://127.0.0.1:8000/c-run/api/run/inp/"
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({
+                title: 'New Pirate Captain',
+                body: 'Arrrrrr-ent you excited?',
+                userId: 3,
+                code: document.querySelector("#code").value,
+                input: document.querySelector("#inp").value
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        }).then(function (response) {
+            if (response.ok) {
+                //                 document.querySelector("#output").value = response.json();
+
+                return response.json();
+            }
+            return Promise.reject(response);
+        }).then(function (data) {
+            document.querySelector("#output").value = data["output"];
+            lastdata = data["output"];
+            console.log(data);
+        }).catch(function (error) {
+            console.warn('Something went wrong.', error);
+        });
+    }
+    function runclk() {
+        let url = "http://127.0.0.1:8000/c-run/api/run/"
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({
+                title: 'New Pirate Captain',
+                body: 'Arrrrrr-ent you excited?',
+                userId: 3,
+                code: document.querySelector("#code").value
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        }).then(function (response) {
+            if (response.ok) {
+                //                 document.querySelector("#output").value = response.json();
+                console.log(response);
+                return response.json();
+            }
+            return Promise.reject(response);
+        }).then(function (data) {
+            document.querySelector("#output").value = data["output"];
+            lastdata = data["output"];
+            console.log(data);
+        }).catch(function (error) {
+            console.warn('Something went wrong.', error);
+        });
+    }
+
+
+function tab(e){
+    var key;
+            if (window.event) {
+                key = e.keyCode;
+            } else if (e.which) {
+                key = e.which;
+            }
+            console.log("hello");
+            console.log(key)
+}
+</script>
+
+</html>

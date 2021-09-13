@@ -1,0 +1,8 @@
+factorial
+palindrome of number
+armstrong
+sum of digits for given number
+check given number is prime or not 
+take two numbers as input if both are positive find a power e if any number is negative swap the number 
+write a program in python to find the smallest number between four numbers
+write a program to reverse a given number
